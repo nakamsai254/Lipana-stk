@@ -1,47 +1,22 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { WifiPlan } from '../types';
 import { APP_CONFIG } from '../constants';
 
 interface PaymentFormProps {
   selectedPlan: WifiPlan;
-  onSuccess: (phone: string) => void;
   onCancel: () => void;
 }
 
-export const PaymentForm: React.FC<PaymentFormProps> = ({ selectedPlan, onSuccess, onCancel }) => {
-  const [phone, setPhone] = useState('');
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!phone || phone.length < 9) {
-      setError('Please enter a valid phone number.');
-      return;
-    }
-
-    setIsProcessing(true);
-    setError(null);
-
-    // TODO: Introduce your new payment logic here
-    try {
-      // Simulation of a payment request
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      onSuccess(phone);
-    } catch (err) {
-      setError('Payment failed. Please try again.');
-    } finally {
-      setIsProcessing(false);
-    }
-  };
+export const PaymentForm: React.FC<PaymentFormProps> = ({ selectedPlan, onCancel }) => {
+  const PAYMENT_LINK = "https://lipana.dev/pay/club-18";
 
   return (
     <div className="bg-white rounded-3xl p-8 shadow-2xl max-w-md w-full mx-auto animate-in fade-in zoom-in duration-300">
       <div className="flex justify-between items-start mb-6">
         <div>
           <h2 className="text-2xl font-bold text-slate-900">Checkout</h2>
-          <p className="text-slate-500 text-sm font-medium mt-1">Complete your purchase to get online</p>
+          <p className="text-slate-500 text-sm font-medium mt-1">Ready to get online?</p>
         </div>
         <button onClick={onCancel} className="text-slate-400 hover:text-slate-600 transition-colors">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -50,69 +25,45 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ selectedPlan, onSucces
         </button>
       </div>
 
-      <div className="bg-slate-50 rounded-2xl p-4 mb-6 flex items-center justify-between border border-slate-100">
-        <div>
-          <span className="block text-xs font-bold text-slate-400 uppercase tracking-wider">Plan</span>
-          <span className="text-slate-800 font-bold">{selectedPlan.name}</span>
+      <div className="bg-slate-50 rounded-2xl p-6 mb-8 border border-slate-100">
+        <div className="flex justify-between items-center mb-4">
+          <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Selected Plan</span>
+          <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold text-white ${selectedPlan.color}`}>
+            {selectedPlan.duration}
+          </span>
         </div>
-        <div className="text-right">
-          <span className="block text-xs font-bold text-slate-400 uppercase tracking-wider">Total</span>
-          <span className="text-xl font-black text-indigo-600">{selectedPlan.price} {APP_CONFIG.currency}</span>
+        <h3 className="text-xl font-bold text-slate-800 mb-1">{selectedPlan.name}</h3>
+        <p className="text-sm text-slate-500 mb-6">{selectedPlan.description}</p>
+        
+        <div className="flex items-center justify-between pt-4 border-t border-slate-200">
+          <span className="text-slate-500 font-medium">Total Amount</span>
+          <span className="text-2xl font-black text-indigo-600">{selectedPlan.price} {APP_CONFIG.currency}</span>
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label htmlFor="phone" className="block text-sm font-semibold text-slate-700 mb-2">
-            Phone Number
-          </label>
-          <div className="relative group">
-            <input
-              type="tel"
-              id="phone"
-              autoFocus
-              value={phone}
-              onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))}
-              placeholder="e.g. 0712345678"
-              className="w-full px-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all font-semibold text-lg"
-              required
-            />
-          </div>
-        </div>
-
-        {error && (
-          <div className="p-4 bg-red-50 text-red-600 text-sm rounded-xl flex items-start space-x-3 border border-red-100">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 shrink-0" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-            </svg>
-            <span>{error}</span>
-          </div>
-        )}
-
-        <button
-          type="submit"
-          disabled={isProcessing}
-          className={`w-full py-5 rounded-2xl text-white font-bold text-lg shadow-xl shadow-indigo-100 transition-all flex items-center justify-center space-x-3 ${
-            isProcessing ? 'bg-indigo-400 cursor-wait' : 'bg-indigo-600 hover:bg-indigo-700 active:scale-[0.98]'
-          }`}
+      <div className="space-y-4">
+        <a
+          href={PAYMENT_LINK}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-full py-5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-lg shadow-xl shadow-indigo-100 transition-all flex items-center justify-center space-x-3 active:scale-[0.98]"
         >
-          {isProcessing ? (
-            <>
-              <svg className="animate-spin h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-              <span>Processing...</span>
-            </>
-          ) : (
-            <span>Confirm Payment</span>
-          )}
-        </button>
-      </form>
+          <span>Pay via Lipana</span>
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
+          </svg>
+        </a>
+        
+        <p className="text-[10px] text-center text-slate-400 font-medium leading-relaxed uppercase tracking-widest px-4">
+          Clicking pay will open our secure Lipana payment gateway in a new tab.
+        </p>
+      </div>
 
-      <p className="mt-6 text-center text-[10px] text-slate-400 uppercase tracking-widest font-bold">
-        Secure Transaction Processing
-      </p>
+      <div className="mt-8 pt-6 border-t border-slate-100 flex items-center justify-center space-x-4 grayscale opacity-60">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/M-PESA_LOGO-01.svg/512px-M-PESA_LOGO-01.svg.png" className="h-6" alt="M-Pesa" />
+        <div className="h-4 w-[1px] bg-slate-200"></div>
+        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Secure Checkout</span>
+      </div>
     </div>
   );
 };

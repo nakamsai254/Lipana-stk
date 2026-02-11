@@ -9,9 +9,8 @@ const App: React.FC = () => {
   const [selectedPlan, setSelectedPlan] = useState<WifiPlan | null>(null);
   const [showCheckout, setShowCheckout] = useState(false);
   const [session, setSession] = useState<UserSession>({ isConnected: false });
-  const [isAnimatingSuccess, setIsAnimatingSuccess] = useState(false);
 
-  // Auto-connect simulation for existing sessions
+  // Load session from storage if any
   useEffect(() => {
     const saved = localStorage.getItem('wifi_session');
     if (saved) {
@@ -24,37 +23,6 @@ const App: React.FC = () => {
       }
     }
   }, []);
-
-  const handlePaymentSuccess = (phone: string) => {
-    if (!selectedPlan) return;
-
-    const durationMap: Record<string, number> = {
-      '1 Hour': 1,
-      '24 Hours': 24,
-      '7 Days': 168,
-      '30 Days': 720
-    };
-
-    const hours = durationMap[selectedPlan.duration] || 1;
-    const expiryTime = new Date();
-    expiryTime.setHours(expiryTime.getHours() + hours);
-
-    const newSession: UserSession = {
-      isConnected: true,
-      activePlan: selectedPlan,
-      phoneNumber: phone,
-      expiryTime
-    };
-
-    setSession(newSession);
-    localStorage.setItem('wifi_session', JSON.stringify(newSession));
-    setIsAnimatingSuccess(true);
-    setShowCheckout(false);
-    setSelectedPlan(null);
-
-    // Fade out success message after 5 seconds
-    setTimeout(() => setIsAnimatingSuccess(false), 5000);
-  };
 
   const calculateRemainingTime = () => {
     if (!session.expiryTime) return "";
@@ -87,7 +55,7 @@ const App: React.FC = () => {
             {session.isConnected ? (
               <div className="bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 flex items-center space-x-3">
                 <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                <span className="text-white font-medium text-sm">{session.phoneNumber} Connected</span>
+                <span className="text-white font-medium text-sm">Connected</span>
               </div>
             ) : (
               <span className="text-white/80 text-sm font-medium">Ready for Connection</span>
@@ -95,7 +63,7 @@ const App: React.FC = () => {
           </div>
         </nav>
 
-        <div className="max-w-3xl">
+        <div className="max-w-3xl text-center md:text-left mx-auto md:mx-0">
           <h1 className="text-4xl sm:text-6xl font-black text-white leading-tight mb-6">
             Smart WiFi <br />
             <span className="text-indigo-200">Simplified Billing.</span>
@@ -110,19 +78,6 @@ const App: React.FC = () => {
       <main className="flex-1 container mx-auto px-6 pb-20">
         {session.isConnected ? (
           <div className="bg-white rounded-[40px] p-8 sm:p-12 shadow-2xl border border-slate-100 -mt-10 overflow-hidden relative">
-            {isAnimatingSuccess && (
-              <div className="absolute inset-0 bg-green-500/10 flex items-center justify-center animate-in fade-in duration-700 pointer-events-none">
-                <div className="text-center">
-                  <div className="bg-green-500 text-white p-6 rounded-full inline-block shadow-xl mb-4 animate-bounce">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                  <h2 className="text-3xl font-black text-green-700">Access Granted!</h2>
-                </div>
-              </div>
-            )}
-
             <div className="grid md:grid-cols-2 gap-12 items-center">
               <div>
                 <span className="text-indigo-600 font-bold tracking-widest uppercase text-sm mb-2 block">Current Status</span>
@@ -220,7 +175,6 @@ const App: React.FC = () => {
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-6 bg-slate-900/60 backdrop-blur-sm">
           <PaymentForm 
             selectedPlan={selectedPlan}
-            onSuccess={handlePaymentSuccess}
             onCancel={() => setShowCheckout(false)}
           />
         </div>
