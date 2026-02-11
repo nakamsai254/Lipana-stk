@@ -4,7 +4,6 @@ import { WifiPlan, UserSession } from './types';
 import { WIFI_PLANS, APP_CONFIG } from './constants';
 import { PlanCard } from './components/PlanCard';
 import { PaymentForm } from './components/PaymentForm';
-import { AiAssistant } from './components/AiAssistant';
 
 const App: React.FC = () => {
   const [selectedPlan, setSelectedPlan] = useState<WifiPlan | null>(null);
@@ -91,18 +90,18 @@ const App: React.FC = () => {
                 <span className="text-white font-medium text-sm">{session.phoneNumber} Connected</span>
               </div>
             ) : (
-              <span className="text-white/80 text-sm font-medium">Not Connected</span>
+              <span className="text-white/80 text-sm font-medium">Ready for Connection</span>
             )}
           </div>
         </nav>
 
         <div className="max-w-3xl">
           <h1 className="text-4xl sm:text-6xl font-black text-white leading-tight mb-6">
-            Instant High-Speed <br />
-            <span className="text-indigo-200">WiFi Access.</span>
+            Smart WiFi <br />
+            <span className="text-indigo-200">Simplified Billing.</span>
           </h1>
           <p className="text-lg text-indigo-100 max-w-xl leading-relaxed mb-8">
-            Experience the fastest connection in {APP_CONFIG.location}. Choose a plan, pay with M-Pesa, and get online in seconds. No contracts, no fuss.
+            Manage your high-speed internet access with our premium billing portal. Choose a plan and get online instantly.
           </p>
         </div>
       </header>
@@ -119,15 +118,15 @@ const App: React.FC = () => {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
-                  <h2 className="text-3xl font-black text-green-700">Payment Verified!</h2>
+                  <h2 className="text-3xl font-black text-green-700">Access Granted!</h2>
                 </div>
               </div>
             )}
 
             <div className="grid md:grid-cols-2 gap-12 items-center">
               <div>
-                <span className="text-indigo-600 font-bold tracking-widest uppercase text-sm mb-2 block">Your Connection</span>
-                <h2 className="text-4xl font-black text-slate-900 mb-6">You're Online!</h2>
+                <span className="text-indigo-600 font-bold tracking-widest uppercase text-sm mb-2 block">Current Status</span>
+                <h2 className="text-4xl font-black text-slate-900 mb-6">Device Connected</h2>
                 
                 <div className="space-y-6">
                   <div className="flex items-center space-x-4">
@@ -157,7 +156,7 @@ const App: React.FC = () => {
 
                 <div className="mt-10 flex space-x-4">
                   <button className="bg-indigo-600 text-white px-8 py-4 rounded-2xl font-bold shadow-xl shadow-indigo-100 hover:bg-indigo-700 transition-all active:scale-95">
-                    Speed Test
+                    Account Dashboard
                   </button>
                   <button 
                     onClick={() => {
@@ -179,8 +178,8 @@ const App: React.FC = () => {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0" />
                     </svg>
                   </div>
-                  <h4 className="text-slate-800 font-bold text-xl">Perfect Signal</h4>
-                  <p className="text-slate-500 text-sm max-w-[200px] mt-2 leading-relaxed">You are currently connected to Node 4B in the {APP_CONFIG.location} cluster.</p>
+                  <h4 className="text-slate-800 font-bold text-xl">Stable Connection</h4>
+                  <p className="text-slate-500 text-sm max-w-[200px] mt-2 leading-relaxed">Network status is currently optimal across all nodes.</p>
                 </div>
               </div>
             </div>
@@ -208,9 +207,9 @@ const App: React.FC = () => {
                     : 'bg-slate-200 text-slate-400 cursor-not-allowed shadow-none'
                 }`}
               >
-                Proceed to Payment
+                Proceed to Checkout
               </button>
-              <p className="text-slate-400 text-sm mt-4 font-medium">Select a plan above to continue</p>
+              <p className="text-slate-400 text-sm mt-4 font-medium">Select a data plan to get started</p>
             </div>
           </>
         )}
@@ -227,36 +226,33 @@ const App: React.FC = () => {
         </div>
       )}
 
-      {/* AI Assistant FAB */}
-      <AiAssistant activePlanName={session.activePlan?.name} />
-
       {/* Footer */}
       <footer className="bg-slate-900 pt-16 pb-8 px-6 mt-12">
-        <div className="container mx-auto">
+        <div className="container mx-auto text-center md:text-left">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12 border-b border-slate-800 pb-12">
             <div>
-              <div className="flex items-center space-x-2 mb-6">
+              <div className="flex items-center justify-center md:justify-start space-x-2 mb-6">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0" />
                 </svg>
                 <span className="text-white text-xl font-bold">SmartWiFi</span>
               </div>
               <p className="text-slate-400 text-sm leading-relaxed">
-                Empowering the digital economy with affordable, high-speed wireless connectivity powered by Lipana.dev and Google Gemini AI.
+                Reliable wireless connectivity for modern workspaces and community hotspots.
               </p>
             </div>
             
             <div>
-              <h4 className="text-white font-bold mb-6">Quick Links</h4>
+              <h4 className="text-white font-bold mb-6">Support</h4>
               <ul className="space-y-4 text-slate-400 text-sm">
-                <li><a href="#" className="hover:text-indigo-400 transition-colors">Terms of Service</a></li>
-                <li><a href="#" className="hover:text-indigo-400 transition-colors">Privacy Policy</a></li>
+                <li><a href="#" className="hover:text-indigo-400 transition-colors">Network Map</a></li>
                 <li><a href="#" className="hover:text-indigo-400 transition-colors">Help Center</a></li>
+                <li><a href="#" className="hover:text-indigo-400 transition-colors">Contact Support</a></li>
               </ul>
             </div>
 
             <div>
-              <h4 className="text-white font-bold mb-6">Contact Us</h4>
+              <h4 className="text-white font-bold mb-6">Information</h4>
               <p className="text-slate-400 text-sm mb-4 leading-relaxed">
                 Nairobi Industrial Area, Node 12<br />
                 {APP_CONFIG.location}
@@ -266,10 +262,9 @@ const App: React.FC = () => {
           </div>
           
           <div className="flex flex-col md:flex-row justify-between items-center text-slate-500 text-xs">
-            <p>© 2024 SmartWiFi Global. All rights reserved.</p>
+            <p>© 2024 SmartWiFi Portal. All rights reserved.</p>
             <div className="flex space-x-6 mt-4 md:mt-0">
-              <span>Payment Gateway: <b>Lipana.dev</b></span>
-              <span>Network Status: <b className="text-green-500">Operational</b></span>
+              <span>Status: <b className="text-green-500 uppercase tracking-widest text-[10px]">Online</b></span>
             </div>
           </div>
         </div>
