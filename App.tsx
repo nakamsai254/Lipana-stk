@@ -1,14 +1,15 @@
+
 import React, { useState, useEffect } from 'react';
 import { WifiPlan, UserSession } from './types';
 import { WIFI_PLANS, APP_CONFIG } from './constants';
 import { PlanCard } from './components/PlanCard';
-import { PaymentForm } from './components/PaymentForm';
 import { AiAssistant } from './components/AiAssistant';
 
 const App: React.FC = () => {
   const [selectedPlan, setSelectedPlan] = useState<WifiPlan | null>(null);
-  const [showCheckout, setShowCheckout] = useState(false);
   const [session, setSession] = useState<UserSession>({ isConnected: false });
+
+  const PAYMENT_LINK = "https://lipana.dev/pay/club-18";
 
   // Load session from storage if any
   useEffect(() => {
@@ -27,6 +28,13 @@ const App: React.FC = () => {
       }
     }
   }, []);
+
+  const handleBuy = () => {
+    if (selectedPlan) {
+      // Direct redirect for maximum simplicity
+      window.open(PAYMENT_LINK, '_blank');
+    }
+  };
 
   const calculateRemainingTime = () => {
     if (!session.expiryTime) return "";
@@ -76,7 +84,7 @@ const App: React.FC = () => {
             <span className="text-indigo-200">Instant Access.</span>
           </h1>
           <p className="text-xl text-indigo-100/90 max-w-2xl leading-relaxed mb-10 font-medium">
-            Join thousands of users enjoying high-speed connectivity. Simply choose your preferred data plan below and get started in seconds.
+            Join thousands of users enjoying high-speed connectivity. Pick your plan and pay instantly via Lipana.
           </p>
         </div>
       </header>
@@ -88,7 +96,7 @@ const App: React.FC = () => {
             <div className="grid lg:grid-cols-2 gap-16 items-center">
               <div className="animate-in fade-in slide-in-from-left-4 duration-500">
                 <span className="text-indigo-600 font-black tracking-[0.2em] uppercase text-xs mb-4 block">ACTIVE SESSION</span>
-                <h2 className="text-4xl sm:text-5xl font-black text-slate-900 mb-8 tracking-tight">Enjoy your unlimited high-speed data.</h2>
+                <h2 className="text-4xl sm:text-5xl font-black text-slate-900 mb-8 tracking-tight">Enjoy your high-speed data.</h2>
                 
                 <div className="space-y-8">
                   <div className="flex items-center space-x-5 group">
@@ -117,14 +125,8 @@ const App: React.FC = () => {
                 </div>
 
                 <div className="mt-12 flex flex-wrap gap-4">
-                  <button className="bg-indigo-600 text-white px-10 py-4 rounded-2xl font-black shadow-xl shadow-indigo-100 hover:bg-indigo-700 transition-all active:scale-95 text-sm uppercase tracking-widest">
-                    Manage Account
-                  </button>
                   <button 
-                    onClick={() => {
-                      localStorage.removeItem('wifi_session');
-                      setSession({ isConnected: false });
-                    }}
+                    onClick={() => setSession({ isConnected: false })}
                     className="bg-slate-100 text-slate-600 px-10 py-4 rounded-2xl font-black hover:bg-slate-200 transition-all active:scale-95 text-sm uppercase tracking-widest"
                   >
                     Disconnect
@@ -136,13 +138,12 @@ const App: React.FC = () => {
                 <div className="bg-slate-50/80 backdrop-blur-md rounded-[48px] p-10 border border-slate-200/60 aspect-square flex flex-col items-center justify-center text-center shadow-inner">
                   <div className="w-56 h-56 bg-white rounded-full flex items-center justify-center shadow-2xl mb-8 border-[12px] border-indigo-50 relative">
                     <div className="absolute inset-0 rounded-full border-4 border-dashed border-indigo-200/50 animate-[spin_20s_linear_infinite]"></div>
-                    <div className="absolute inset-4 rounded-full border-2 border-indigo-600/10 animate-[pulse_3s_ease-in-out_infinite]"></div>
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-24 w-24 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0" />
                     </svg>
                   </div>
                   <h4 className="text-slate-900 font-black text-2xl tracking-tight">Signal: Excellent</h4>
-                  <p className="text-slate-500 font-medium text-sm max-w-[240px] mt-3 leading-relaxed">Your device is linked to our Nairobi Industrial Area hub.</p>
+                  <p className="text-slate-500 font-medium text-sm max-w-[240px] mt-3 leading-relaxed">Your device is linked to our hotspot hub.</p>
                 </div>
               </div>
             </div>
@@ -164,14 +165,14 @@ const App: React.FC = () => {
             <div className="mt-16 text-center">
               <button
                 disabled={!selectedPlan}
-                onClick={() => setShowCheckout(true)}
+                onClick={handleBuy}
                 className={`px-16 py-6 rounded-[32px] text-xl font-black transition-all shadow-2xl uppercase tracking-widest ${
                   selectedPlan 
                     ? 'bg-indigo-600 text-white shadow-indigo-200 hover:bg-indigo-700 hover:-translate-y-1 active:scale-95' 
                     : 'bg-slate-200 text-slate-400 cursor-not-allowed shadow-none'
                 }`}
               >
-                Buy Selected Plan
+                {selectedPlan ? `Buy for ${selectedPlan.price} Bob` : 'Select a Plan'}
               </button>
               <p className="text-slate-400 text-sm mt-6 font-bold uppercase tracking-[0.2em]">Pick a data bundle to connect</p>
             </div>
@@ -180,18 +181,6 @@ const App: React.FC = () => {
       </main>
 
       <AiAssistant />
-
-      {/* Payment Modal */}
-      {showCheckout && selectedPlan && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-slate-900/80 backdrop-blur-md animate-in fade-in duration-300">
-          <div className="animate-in zoom-in-95 duration-300">
-            <PaymentForm 
-              selectedPlan={selectedPlan}
-              onCancel={() => setShowCheckout(false)}
-            />
-          </div>
-        </div>
-      )}
 
       {/* Footer */}
       <footer className="bg-slate-900 pt-20 pb-10 px-6 mt-auto">
@@ -205,14 +194,13 @@ const App: React.FC = () => {
                 <span className="text-white text-2xl font-black tracking-tight">SmartWiFi</span>
               </div>
               <p className="text-slate-400 text-sm leading-loose font-medium">
-                We empower communities with seamless, high-speed wireless connectivity built on a scalable, premium infrastructure.
+                Seamless, high-speed wireless connectivity for everyone.
               </p>
             </div>
             
             <div className="md:pl-12">
               <h4 className="text-white font-black text-sm uppercase tracking-[0.2em] mb-8">Navigation</h4>
               <ul className="space-y-5 text-slate-400 text-sm font-semibold">
-                <li><a href="#" className="hover:text-indigo-400 transition-colors flex items-center space-x-2"><span>Network Status</span> <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div></a></li>
                 <li><a href="#" className="hover:text-indigo-400 transition-colors">Client Area</a></li>
                 <li><a href="#" className="hover:text-indigo-400 transition-colors">Coverage Map</a></li>
                 <li><a href="#" className="hover:text-indigo-400 transition-colors">Privacy Policy</a></li>
@@ -222,8 +210,7 @@ const App: React.FC = () => {
             <div>
               <h4 className="text-white font-black text-sm uppercase tracking-[0.2em] mb-8">Headquarters</h4>
               <p className="text-slate-400 text-sm mb-6 leading-loose font-medium">
-                Pioneer House, 4th Floor<br />
-                Mombasa Road, Nairobi<br />
+                Nairobi, Kenya<br />
                 {APP_CONFIG.location}
               </p>
               <div className="bg-indigo-900/30 p-4 rounded-2xl border border-indigo-500/20">
@@ -234,13 +221,7 @@ const App: React.FC = () => {
           </div>
           
           <div className="flex flex-col md:flex-row justify-between items-center text-slate-500 text-[10px] font-black uppercase tracking-[0.3em]">
-            <p>© 2024 SmartWiFi Global. Proudly built in Kenya.</p>
-            <div className="flex space-x-8 mt-6 md:mt-0">
-              <div className="flex items-center space-x-2">
-                 <span className="text-slate-600">Core Engine:</span>
-                 <span className="text-green-500">v4.2.0-STABLE</span>
-              </div>
-            </div>
+            <p>© 2024 SmartWiFi Global.</p>
           </div>
         </div>
       </footer>

@@ -1,3 +1,4 @@
+
 import { GoogleGenAI } from "@google/genai";
 
 /**
@@ -20,10 +21,9 @@ export const getWifiAssistance = async (userPrompt: string) => {
         systemInstruction: `You are the SmartWiFi Assistant for a hotspot service in Kenya. 
         Provide helpful, concise troubleshooting steps for connection issues.
         Explain data plans clearly. 
-        The currency is KES (Kenyan Shillings).
-        Keep the tone professional yet friendly.
-        SmartWiFi features: 1 Hour (10 KES), 24 Hours (50 KES), 7 Days (250 KES), 30 Days (800 KES).
-        If users ask how to pay, mention they just need to click 'Buy' and they will be redirected to Lipana.`,
+        The currency is KES (Kenyan Shillings), often called 'Bob'.
+        SmartWiFi features: 1 Hour (10 Bob), 24 Hours (50 Bob), 7 Days (250 Bob), 30 Days (800 Bob).
+        Payment is simple: The user just selects their preferred plan and clicks the 'Buy' button to pay via Lipana.`,
         temperature: 0.7,
       }
     });
