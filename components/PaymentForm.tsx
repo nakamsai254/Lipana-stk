@@ -8,6 +8,7 @@ interface PaymentFormProps {
 }
 
 export const PaymentForm: React.FC<PaymentFormProps> = ({ selectedPlan, onCancel }) => {
+  // Direct payment link provided by user
   const PAYMENT_LINK = "https://lipana.dev/pay/club-18";
 
   return (
@@ -17,7 +18,11 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ selectedPlan, onCancel
           <h2 className="text-2xl font-bold text-slate-900">Checkout</h2>
           <p className="text-slate-500 text-sm font-medium mt-1">Ready to get online?</p>
         </div>
-        <button onClick={onCancel} className="text-slate-400 hover:text-slate-600 transition-colors focus:outline-none">
+        <button 
+          onClick={onCancel} 
+          className="text-slate-400 hover:text-slate-600 transition-colors focus:outline-none p-1 hover:bg-slate-100 rounded-lg"
+          aria-label="Close"
+        >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
           </svg>
@@ -27,8 +32,7 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ selectedPlan, onCancel
       <div className="bg-slate-50 rounded-2xl p-6 mb-8 border border-slate-100">
         <div className="flex justify-between items-center mb-4">
           <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Selected Plan</span>
-          {/* Fix: Replaced undefined 'plan.color' with 'selectedPlan.color' */}
-          <span className={`px-3 py-1 rounded-full text-[10px] font-bold text-white shadow-sm ${planColorToClass(selectedPlan.color)}`}>
+          <span className={`px-3 py-1 rounded-full text-[10px] font-bold text-white shadow-sm ${selectedPlan.color}`}>
              {selectedPlan.duration}
           </span>
         </div>
@@ -46,7 +50,7 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ selectedPlan, onCancel
           href={PAYMENT_LINK}
           target="_blank"
           rel="noopener noreferrer"
-          className="w-full py-5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-lg shadow-xl shadow-indigo-100 transition-all flex items-center justify-center space-x-3 active:scale-[0.98]"
+          className="w-full py-5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-lg shadow-xl shadow-indigo-100 transition-all flex items-center justify-center space-x-3 active:scale-[0.98] transform"
         >
           <span>Pay via Lipana</span>
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -67,8 +71,3 @@ export const PaymentForm: React.FC<PaymentFormProps> = ({ selectedPlan, onCancel
     </div>
   );
 };
-
-// Helper to ensure colors match provided constant keys
-function planColorToClass(color: string) {
-  return color || 'bg-indigo-600';
-}
