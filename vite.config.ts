@@ -6,7 +6,8 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   define: {
-    // Bridges the gap for the Gemini SDK requirement to use process.env.API_KEY
-    'process.env.API_KEY': JSON.stringify(process.env.API_KEY)
+    // Bridges the gap for the SDK requirements to use process.env
+    'process.env.API_KEY': JSON.stringify(process.env.API_KEY),
+    'process.env.LIPANA_API_KEY': JSON.stringify(process.env.LIPANA_API_KEY)
   }
 });
