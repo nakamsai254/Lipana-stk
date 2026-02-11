@@ -1,31 +1,34 @@
-
 import { GoogleGenAI } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
-
-export const getWifiAssistance = async (query: string, currentPlanName?: string) => {
+/**
+ * Initializes and calls the Gemini API to provide intelligent support for SmartWiFi users.
+ * Handles system instructions for troubleshooting, plan explanations, and general usage help.
+ */
+export const getWifiAssistance = async (userPrompt: string) => {
+  // Always use a named parameter to initialize GoogleGenAI.
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  
   try {
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash',
-      contents: query,
+      contents: userPrompt,
       config: {
-        systemInstruction: `You are a helpful WiFi Hotspot Assistant for "SmartWiFi". 
-        Our plans are: 
-        1. Quick Access (1 hr, 10 KES)
-        2. Daily Power (24 hrs, 50 KES)
-        3. Weekly Stream (7 days, 250 KES)
-        4. Unlimited Home (30 days, 800 KES).
-        Payments are processed via Lipana.dev (M-Pesa STK Push).
-        Help users choose a plan based on their needs (streaming, gaming, emails).
-        Keep responses concise, friendly, and professional. 
-        User is currently on: ${currentPlanName || 'No active plan'}.`,
+        systemInstruction: `You are the SmartWiFi Assistant for a hotspot service in Kenya. 
+        Provide helpful, concise troubleshooting steps for connection issues.
+        Explain data plans clearly. 
+        The currency is KES (Kenyan Shillings).
+        Keep the tone professional yet friendly.
+        SmartWiFi features: 1 Hour (10 KES), 24 Hours (50 KES), 7 Days (250 KES), 30 Days (800 KES).`,
         temperature: 0.7,
-      },
+        topK: 40,
+        topP: 0.8
+      }
     });
 
-    return response.text;
+    // Access the .text property directly as it returns the string output.
+    return response.text || "I'm sorry, I couldn't process your request right now.";
   } catch (error) {
-    console.error("Gemini Error:", error);
-    return "I'm having trouble connecting to my brain right now, but I recommend the Daily Power plan for most users!";
+    console.error("Gemini Assistance Error:", error);
+    return "I encountered an error connecting to my services. Please try again or contact support directly.";
   }
 };

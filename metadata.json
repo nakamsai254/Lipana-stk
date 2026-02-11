@@ -1,7 +1,5 @@
 {
-  "name": "SmartWiFi Billing & Portal",
-  "description": "A high-performance WiFi billing system with integrated Lipana.dev payment processing and an AI-powered network assistant.",
-  "requestFramePermissions": [
-    "geolocation"
-  ]
+  "name": "SmartWiFi Portal",
+  "description": "A premium WiFi hotspot billing and management portal with AI-powered assistance for troubleshooting and plan selection.",
+  "requestFramePermissions": []
 }
